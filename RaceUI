@@ -1,0 +1,61 @@
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class RaceUI : MonoBehaviour
+{
+    [Header("Refs")]
+    public CarController2D car;
+    public Slider accelerationSlider;
+
+    [Header("Texts (TMP)")]
+    public TextMeshProUGUI accelText;     
+    public TextMeshProUGUI speedText;     
+    public TextMeshProUGUI distanceText;  
+    public TextMeshProUGUI timeText;      
+
+    [Header("Slider Range")]
+    public float minA = -5f;
+    public float maxA = 5f;
+
+    void Start()
+    {
+        if (accelerationSlider != null)
+        {
+            accelerationSlider.minValue = minA;
+            accelerationSlider.maxValue = maxA;
+            accelerationSlider.value = 0f;
+            accelerationSlider.onValueChanged.AddListener(OnAccelChanged);
+            if (car) car.SetAcceleration(accelerationSlider.value);
+        }
+        UpdateTexts();
+    }
+
+    void Update()
+    {
+        UpdateTexts();
+    }
+
+    void OnAccelChanged(float a)
+    {
+        if (car) car.SetAcceleration(a);
+    }
+
+    void UpdateTexts()
+    {
+        if (!car) return;
+
+        float v = car.velocity;        
+        float vKmh = v * 3.6f;         
+
+        if (accelText)    accelText.text    = $"a = {car.acceleration:F2} m/s²";
+        if (speedText)    speedText.text    = $"v = {v:F2} m/s  ({vKmh:F1} km/h)";
+        if (distanceText) distanceText.text = $"s = {car.distance:F2} m";
+        if (timeText)     timeText.text     = $"t = {car.elapsedTime:F2} s";
+    }
+
+    // ปุ่มจาก UI
+    public void OnStart() { if (car) car.StartRun(); }
+    public void OnPause() { if (car) car.PauseRun(); }
+    public void OnReset() { if (car) car.ResetRun(); }
+}
