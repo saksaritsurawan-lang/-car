@@ -1,0 +1,20 @@
+// CameraFollow2D.cs
+using UnityEngine;
+
+public class CameraFollow2D : MonoBehaviour
+{
+    public Transform target;                          // ลาก Car (Square) มาวาง
+    public Vector3 offset = new Vector3(0, 0, -10f);  // กล้อง 2D ต้องมี z = -10
+    public float smoothTime = 0.15f;
+
+    private Vector3 vel;
+
+    void LateUpdate()
+    {
+        if (!target) return;
+
+        Vector3 goal = new Vector3(target.position.x, target.position.y, 0f) + offset;
+        transform.position = Vector3.SmoothDamp(transform.position, goal, ref vel, smoothTime);
+    }
+}
+
